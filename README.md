@@ -11,7 +11,7 @@ This magma chamber evolution box model is an expansion of the model presented in
   - Chamber hosted in viscoelastic crust
 
 ## Inputs
-Example runcode files included in usr directory. Specify starting crystalinity, magma composition, total magma co2 and h2o content, inital chamber volume, and recharge rate
+Example runcode files included in usr directory. Specify  magma composition, total magma co2 and h2o content, inital chamber volume, and recharge rate
 
 ## Outputs 
 - Run results saved as .mat file
