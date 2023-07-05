@@ -16,4 +16,5 @@ Example runcode files included in usr directory. Specify  magma composition, tot
 ## Outputs 
 - Run results saved as .mat file
 - Overview timeseries for run
+- Written to usr directory
   
