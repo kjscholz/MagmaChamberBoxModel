@@ -6,7 +6,7 @@ function dydz = odeChamber(time,y,        ...
 global storeTime storeTemp phase
 global total_Mass M_h2o M_co2
 
-
+% pass in primary governing variable values
 P              = y(1);
 T              = y(2);
 eps_g          = y(3);
