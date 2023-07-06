@@ -112,8 +112,8 @@ c              = (1/rho)*(rho_x*eps_x*param.c_x+rho_m*eps_m*param.c_m+rho_g*eps_
 rc              = rho_x*eps_x*param.c_x+rho_m*eps_m*param.c_m+rho_g*eps_g*c_g;
 drc_dP          = eps_x*param.c_x*drho_x_dP+eps_g*c_g*drho_g_dP+eps_m*param.c_m*drho_m_dP+(rho_x*param.c_x-rho_m*param.c_m)*deps_x_dP;
 drc_dT          = eps_x*param.c_x*drho_x_dT+eps_g*c_g*drho_g_dT+eps_m*param.c_m*drho_m_dT+(rho_x*param.c_x-rho_m*param.c_m)*deps_x_dT;
-drc_deps_g      = rho_g*c_g-rho_m*param.c_m;
-drc_dXco2       = 0;
+%drc_deps_g      = rho_g*c_g-rho_m*param.c_m;
+drc_dXco2       = rho_g*eps_g*dc_g_dX_co2;
 
 % boundary conditions
 [Mdot_in, Mdot_out, Mdot_v_in, Mdot_v_out,Mdot_c_in, Mdot_c_out, Hdot_in, Hdot_out, P_loss,eta_r] ...
