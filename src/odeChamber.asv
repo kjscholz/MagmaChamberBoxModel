@@ -148,7 +148,7 @@ a31  = drc_dP/(rc)+dV_dP/V+param.L_m*(-eps_x*drho_x_dP/(rc*T)-rho_x*deps_x_dP/(r
 a32  = drc_dT/(rc)+1/T+dV_dT/V+param.L_m*(-eps_x*drho_x_dT/(rc*T)-rho_x*deps_x_dT/(rc*T)-rho_x*eps_x*dV_dT/(rc*T*V))+...
     param.L_e*(-dm_eq_dT*rho_m*eps_m/(rc*T)-m_eq*eps_m*drho_m_dT/(rc*T)+m_eq*rho_m*deps_x_dT/(rc*T)-m_eq*rho_m*eps_m*dV_dT/(rc*T*V));
 a33  = (rho_g*c_g-rho_m*param.c_m)/rc +param.L_e*m_eq*rho_m/(rc*T);
-a34  = drc_dXco2/rc-param.L_e*rho_m*eps_m*dm_eq_dX_co2/(rc*T);
+a34  = rho_g*eps_g*/(rc)-param.L_e*rho_m*eps_m*dm_eq_dX_co2/(rc*T);
 
 
 %conservation of CO2 mass
