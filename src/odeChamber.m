@@ -113,7 +113,7 @@ c              = (1/rho)*(rho_x*eps_x*param.c_x+rho_m*eps_m*param.c_m+rho_g*eps_
 rc              = rho_x*eps_x*param.c_x+rho_m*eps_m*param.c_m+rho_g*eps_g*c_g;
 drc_dP          = eps_x*param.c_x*drho_x_dP+eps_g*c_g*drho_g_dP+eps_m*param.c_m*drho_m_dP+(rho_x*param.c_x-rho_m*param.c_m)*deps_x_dP;
 drc_dT          = eps_x*param.c_x*drho_x_dT+eps_g*c_g*drho_g_dT+eps_m*param.c_m*drho_m_dT+(rho_x*param.c_x-rho_m*param.c_m)*deps_x_dT;
-%drc_deps_g      = rho_g*c_g-rho_m*param.c_m;
+drc_deps_g      = rho_g*c_g-rho_m*param.c_m;
 drc_dXco2       = rho_g*eps_g*dc_g_dX_co2;
 
 % boundary conditions
@@ -147,7 +147,7 @@ a31  = drc_dP/(rc)+dV_dP/V+param.L_m*(-eps_x*drho_x_dP/(rc*T)-rho_x*deps_x_dP/(r
     param.L_e*(-dm_eq_dP*rho_m*eps_m/(rc*T)-m_eq*eps_m*drho_m_dP/(rc*T)+m_eq*rho_m*deps_x_dP/(rc*T)-m_eq*rho_m*eps_m*dV_dP/(rc*V*T));
 a32  = drc_dT/(rc)+1/T+dV_dT/V+param.L_m*(-eps_x*drho_x_dT/(rc*T)-rho_x*deps_x_dT/(rc*T)-rho_x*eps_x*dV_dT/(rc*T*V))+...
     param.L_e*(-dm_eq_dT*rho_m*eps_m/(rc*T)-m_eq*eps_m*drho_m_dT/(rc*T)+m_eq*rho_m*deps_x_dT/(rc*T)-m_eq*rho_m*eps_m*dV_dT/(rc*T*V));
-a33  = (rho_g*c_g-rho_m*param.c_m)/rc +param.L_e*m_eq*rho_m/(rc*T);
+a33  = drc_deps_g/rc + param.L_e*m_eq*rho_m/(rc*T);
 a34  = drc_dXco2/rc-param.L_e*rho_m*eps_m*dm_eq_dX_co2/(rc*T);
 
 
