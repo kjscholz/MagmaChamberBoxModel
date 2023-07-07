@@ -108,7 +108,8 @@ drho_dMh2ot =  (rho_x-rho_m)*deps_x_dmh2o_t;% COMPUTE deps_x_dMh2ot
 c              = (1/rho)*(rho_x*eps_x*param.c_x+rho_m*eps_m*param.c_m+rho_g*eps_g*c_g);
 
 % computing the product of density and specific heat for the mixture and
-% its derivatives
+% its derivatives wrt T, P, Xco2. Derivatives wrt conc total water and conc
+% total co2 are written out in b3
 rc              = rho_x*eps_x*param.c_x+rho_m*eps_m*param.c_m+rho_g*eps_g*c_g;
 drc_dP          = eps_x*param.c_x*drho_x_dP+eps_g*c_g*drho_g_dP+eps_m*param.c_m*drho_m_dP+(rho_x*param.c_x-rho_m*param.c_m)*deps_x_dP;
 drc_dT          = eps_x*param.c_x*drho_x_dT+eps_g*c_g*drho_g_dT+eps_m*param.c_m*drho_m_dT+(rho_x*param.c_x-rho_m*param.c_m)*deps_x_dT;
@@ -122,7 +123,7 @@ drc_dXco2       = rho_g*eps_g*dc_g_dX_co2;
 
 
 % coefficients in the system of unknowns Ax = B, here x= [dP/dt dT/dt deps_g/dt dX_co2/dt]
-% note: P, T, and phi are y(1), y(2) and y(3) respectively
+% note: P, T, and eps_g are y(1), y(2) and y(3) respectively, X_co2 is y(7)
 % values matrix A
 
 % conservation of (total) mass
@@ -176,8 +177,10 @@ b1  =  (Mdot_in - Mdot_out)/(rho*V) - P_loss-(rho_x-rho_m)/rho*deps_x_dmh2o_t*dM
 b2  = (Mdot_v_in - Mdot_v_out)/(rho_m*V)+m_eq*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt)-m_eq*eps_m*P_loss-(1-X_co2)/m_g*rho_g/rho_m*eps_g*param.mm_h2o*P_loss;
 %(Mdot_v_in - Mdot_v_out)/(rho_g*eps_g*V) - P_loss*((param.mm_h2o*(1-X_co2))/m_g+(m_eq*rho_m*eps_m)/(rho_g*eps_g));
 % conservation of (total) enthalpy
-b3  =  (Hdot_in - Hdot_out)/(rc*T*V) - 1/(rc*V*T)*((rho_x*param.c_x-rho_m*param.c_m)*T*V*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt))+...
-    param.L_m*rho_x*V/(rc*V*T)*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt)+param.L_e*m_eq*rho_m*V/(rc*V*T)*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt)+...
+b3  =  (Hdot_in - Hdot_out)/(rc*T*V)...
+    - 1/(rc*V*T)*((rho_x*param.c_x-rho_m*param.c_m)*T*V*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt))+...
+    param.L_m*rho_x*V/(rc*V*T)*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt)...
+    -param.L_e*m_eq*rho_m*V/(rc*V*T)*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt)+...
     P_loss*(-1+param.L_m*rho_x*eps_x*V/(rc*V*T)+param.L_e*m_eq*rho_m*eps_m*V/(rc*V*T));%- P_loss*(1-(param.L_m*rho_x*eps_x)/(rho*c*T)-(param.L_e*m_eq*rho_m*eps_m)/(rho*c*T));
 % conservation of CO2 mass
 b4  =  (Mdot_c_in - Mdot_c_out)/(rho_m*V)+C_co2*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt)-C_co2*eps_m*P_loss-(X_co2)/m_g*rho_g/rho_m*eps_g*param.mm_co2*P_loss;
