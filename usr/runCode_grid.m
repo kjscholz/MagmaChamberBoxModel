@@ -33,6 +33,21 @@ range_log_vfr    = linspace(-5,-4,2); % log volume recharge rate (km3/yr)
 % storage depth (m)
 range_depth      = linspace(8e3,8e3,1); % chamber depth (m)
 
+% set up folders for outputs
+
+for i=1:length(range_water)
+    for j=1:length(range_co2)
+        foldername = [param.composition '_H2O_' num2str(range_water(i)) '_CO2_' num2str(range_co2(j))];
+        if save_output
+            mkdir(['output/' foldername]);
+        end
+        if save_figures
+            mkdir(['figures/' foldername]);
+        end
+    end
+end
+
+
 
 %% Run the code over the grid search
 
@@ -50,11 +65,6 @@ range_mfr        = param.rho_m0.*range_vfr.*1e9/(3600*24*365); % convert to kg/s
 number_runs      = length(grid_depth(:));
 disp(['Number of models to be run = ' num2str(number_runs)])
 
-if save_output == 1
-    foldername = [param.composition '_H2O_' num2str(range_water*100) '_CO2_' num2str(range_co2*1e6)];
-    mkdir(['output/' foldername])
-    mkdir(['figures/' foldername]);
-end
 
 
 % run chamber model over the grid values
@@ -69,7 +79,9 @@ for run_i = 1:number_runs
     % volatile concentrations
     InitialConc_H2O = grid_water(run_i); % 450 ppm and 4.2 wt % is interesting as a failure
     InitialConc_CO2 = grid_co2(run_i);
-    
+    if save_output || save_figure
+        foldername = [param.composition '_H2O_' num2str(InitialConc_H2O*100) '_CO2_' num2str(InitialConc_CO2*1e6)];
+    end
     % recharge rate
     mdot_in       = grid_mfr(run_i);     % Mass inflow rate (kg/s)
      

@@ -442,7 +442,7 @@ if save_figures == 1
     xlabel('time (yr)','FontSize',16), ylabel('Volume (km^3)','FontSize',16)
     set(gca,'FontSize',12)
     
-    sgtitle([param.composition ', H2O ' num2str(mh2o(1)*100) ', CO2 ' num2str(mco2(1)*1e6) ', run ' num2str(run_n) ', Mdot_{in} ' num2str(mdot_in) ' kg/s, V ' num2str(V(1)/1e9) ' km^3' ])
+    sgtitle([param.composition ', H2O ' num2str(InitialConc_H2O*100) ', CO2 ' num2str(InitialConc_CO2*1e6) ', run ' num2str(run_n) ', Mdot_{in} ' num2str(mdot_in) ' kg/s, V ' num2str(V(1)/1e9) ' km^3' ])
     figname=['figures/' foldername '/run_' num2str(run_n) '.jpg'];
     
     saveas(gcf, figname)
