@@ -5,8 +5,8 @@ clc
 addpath('../src/')
 
 run_n        = 1; % number for naming input/output files
-save_output  = 0; % set to 1 to save output as .mat file
-save_figures = 0; % set to 1 to save figures
+save_output  = 1; % set to 1 to save output as .mat file
+save_figures = 1; % set to 1 to save figures
 
 %% Set initial & boundary conditions
 
