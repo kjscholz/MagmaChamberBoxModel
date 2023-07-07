@@ -1,3 +1,8 @@
 # matlab autosave files #
 ###################
 *.asv
+
+# usr outputs #
+################
+usr/output/
+usr/figures/
