@@ -6,6 +6,7 @@
 ################
 output/
 figures/
+comparison_figures/
 
 # OS generated files #
 ######################
