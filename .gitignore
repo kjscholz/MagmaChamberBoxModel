@@ -4,8 +4,8 @@
 
 # usr outputs #
 ################
-usr/output/
-usr/figures/
+output/
+figures/
 
 # OS generated files #
 ######################
