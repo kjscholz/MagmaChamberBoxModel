@@ -14,7 +14,9 @@ err_tol = 0.001; % error tolerance used for IC Finder
 maxcount_MT = 2e5; % max count for IC Finder
 random_guess=0; % start with a random guess? If not, pass initial guesses below
 eps_g_exp_ini_pass = -3; % initial guess for the exponent of gas fraction
-X_co2_ini_pass = 0.8; % initial guess for X_co2
 
-
-
+if strcmp(param.composition,'silicic')
+   X_co2_ini_pass = 0.5; % initial guess for X_co2
+elseif strcmp(param.composition,'mafic')
+    X_co2_ini_pass = 0.8; % initial guess for X_co2
+end

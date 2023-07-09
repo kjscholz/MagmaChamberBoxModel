@@ -38,11 +38,15 @@ InitialConc_CO2   = co2/1e6;   % convert to mass fraction
 vfr           = 10.^log_vfr; % volume flow rate (km3/yr)
 mdot_in        = param.rho_m0.*vfr.*1e9/(3600*24*365); % convert to mass recharge rate (kg/s)
 
-if save_output == 1
-    foldername = [param.composition '_H2O_' num2str(water) '_CO2_' num2str(co2)];
-    mkdir(['output/' foldername])
+
+foldername = [param.composition '_H2O_' num2str(water) '_CO2_' num2str(co2)];
+if save_output
+    mkdir(['output/' foldername]);
+end
+if save_figures
     mkdir(['figures/' foldername]);
 end
+
 
 % Run the model
 disp('********************************')
