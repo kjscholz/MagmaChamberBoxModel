@@ -1,64 +1,85 @@
+save_timeseries=1;
+run_list = 1:18:900;
+addpath('../src/')
+% set up to compare up to three different runs, length of this vector
+% determine how many are plotted
+%composition_folders = ["silicic_H2O_4_CO2_100/";"silicic_H2O_4_CO2_1000/";"silicic_H2O_6_CO2_100/"];
+composition_folders = ["mafic_H2O_0.5_CO2_500/";"mafic_H2O_0.5_CO2_10000/";"mafic_H2O_2_CO2_500/"];
 
-save_compare=1;
-compare_vec=1:18:900;
-for compare_count=1:50
-    
-run_number= 1000+compare_vec(compare_count);
-%run_number = compare_vec(compare_count);
-composition_folder = 'silicic_H2O_6_CO2_1000/';
+% specify legend entries from composition folders
+old = "_";
+new = " ";
+legend_entries = replace(composition_folders,old,new);
 
-% Read in original data
-filepath = ['D:/CO2_Paper_Silicic_noDike_highRES/output/' composition_folder 'run_' num2str(run_number) '.mat'];
+figure_directory = 'figures_timeseries/';
+figure_name_prefix = 'mafic';
+figure_type= '.jpg'; %options include .jpg and .epsc
+
+for count = 1:3%length(run_list)   
+run_prefix = 1000;
+run_number = run_prefix + run_list(count);
+
+% Read in first run
+filepath = ['../usr/output/' convertStringsToChars(composition_folders(1)) 'run_' num2str(run_number) '.mat'];
 load(filepath)
-original_time = time;
-original_P = P;
-original_X_co2 = X_co2;
-original_eps_g = eps_g;
-original_T = T;
-original_eps_x = eps_x;
-original_tot_Mass = tot_Mass;
-original_tot_Mass_0 = tot_Mass(1);
-original_tot_Mass_H2O = tot_Mass_H2O;
-original_tot_Mass_H2O_0 = tot_Mass_H2O(1);
-original_tot_Mass_CO2 = tot_Mass_CO2;
-original_tot_Mass_CO2_0 = tot_Mass_CO2(1);
-original_V_0=V_0
-original_mdot_in = mdot_in
+time_1 = time;
+P_1 = P;
+X_co2_1 = X_co2;
+eps_g_1 = eps_g;
+T_1 = T;
+eps_x_1 = eps_x;
+tot_Mass_1 = tot_Mass;
+tot_Mass_ini_1 = tot_Mass(1);
+tot_Mass_H2O_1 = tot_Mass_H2O;
+tot_Mass_H2O_ini_1 = tot_Mass_H2O(1);
+m_H2O_diss_1 = M_h2o_diss;
+tot_Mass_CO2_1 = tot_Mass_CO2;
+m_CO2_diss_1 = M_co2_diss;
+tot_Mass_CO2_ini_1 = tot_Mass_CO2(1);
+V0 = V_0
+mdot_in = mdot_in
 
-% Read in new data
-filepath = ['../usr/output/' composition_folder 'run_' num2str(run_number) '.mat'];
+if length(composition_folders)>1
+% Read in second run
+filepath = ['../usr/output/' convertStringsToChars(composition_folders(2)) 'run_' num2str(run_number) '.mat'];
 load(filepath)
-new_time = time;
-new_P = P;
-new_X_co2 = X_co2;
-new_eps_g = eps_g;
-new_T = T;
-new_eps_x = eps_x;
-new_tot_Mass = tot_Mass;
-new_tot_Mass_0 = tot_Mass(1);
-new_tot_Mass_H2O = tot_Mass_H2O;
-new_tot_Mass_H2O_0 = tot_Mass_H2O(1);
-new_tot_Mass_CO2 = tot_Mass_CO2;
-new_tot_Mass_CO2_0 = tot_Mass_CO2(1);
+time_2 = time;
+P_2 = P;
+X_co2_2 = X_co2;
+eps_g_2 = eps_g;
+T_2 = T;
+eps_x_2 = eps_x;
+tot_Mass_2 = tot_Mass;
+tot_Mass_ini_2 = tot_Mass(1);
+tot_Mass_H2O_2 = tot_Mass_H2O;
+m_H2O_diss_2 = M_h2o_diss;
+tot_Mass_H2O_ini_2 = tot_Mass_H2O(1);
+tot_Mass_CO2_2 = tot_Mass_CO2;
+m_CO2_diss_2 = M_co2_diss;
+tot_Mass_CO2_ini_2 = tot_Mass_CO2(1);
 % 
 
+end
 
-
-% Read in new data
-filepath = ['D:/CO2model_newICFinder/MagmaChamberModel_main/usr/output/' composition_folder 'run_' num2str(run_number) '.mat'];
+if length(composition_folders)>2
+% Read third run
+filepath = ['../usr/output/' convertStringsToChars(composition_folders(3)) 'run_' num2str(run_number) '.mat'];
 load(filepath)
-IC_time = time;
-IC_P = P;
-IC_X_co2 = X_co2;
-IC_eps_g = eps_g;
-IC_T = T;
-IC_eps_x = eps_x;
-IC_tot_Mass = tot_Mass;
-IC_tot_Mass_0 = tot_Mass(1);
-IC_tot_Mass_H2O = tot_Mass_H2O;
-IC_tot_Mass_H2O_0 = tot_Mass_H2O(1);
-IC_tot_Mass_CO2 = tot_Mass_CO2;
-IC_tot_Mass_CO2_0 = tot_Mass_CO2(1);
+time_3 = time;
+P_3 = P;
+X_co2_3 = X_co2;
+eps_g_3 = eps_g;
+T_3 = T;
+eps_x_3 = eps_x;
+tot_Mass_3 = tot_Mass;
+tot_Mass_ini_3 = tot_Mass(1);
+tot_Mass_H2O_3 = tot_Mass_H2O;
+tot_Mass_H2O_ini_3 = tot_Mass_H2O(1);
+m_H2O_diss_3 = M_h2o_diss;
+tot_Mass_CO2_3 = tot_Mass_CO2;
+m_CO2_diss_3 = M_co2_diss;
+tot_Mass_CO2_ini_3 = tot_Mass_CO2(1);
+end
 % 
 % 
 p = 6; % point size
@@ -67,48 +88,60 @@ fig_size_x = 38;
 fig_size_y = 19;
 
 s2yr = 1/(3600*24*365*1e3);
-legend_values = ["old"; "new IC, fixed"; "new IC, old enthalpy"];
 
-n=4;
+
 
 figure('Renderer', 'painters','units','centimeters', 'Position', [10 10 fig_size_x fig_size_y]) 
-
-%t = tiledlayout(n,2,'TileSpacing','Compact','Padding','Compact');
 
 % Plot XCo2 
 subplot(2,4,1)
 
-plot(original_time.*s2yr,original_X_co2,'LineWidth',1)
+plot(time_1.*s2yr,X_co2_1,'LineWidth',1)
 hold on
-plot(new_time.*s2yr,new_X_co2,'LineWidth',1)
-plot(IC_time.*s2yr,IC_X_co2,'LineWidth',1)
+
+if length(composition_folders)>1
+plot(time_2.*s2yr,X_co2_2,'LineWidth',1)
+end
+
+if length(composition_folders)>2
+plot(time_3.*s2yr,X_co2_3,'LineWidth',1)
+end
+
 ylabel('X_{co2}')
 set(gca,'LineWidth',1, 'FontSize',ftsize)
-legend(legend_values)
+legend(legend_entries)
 
 
 % eps_g 
 subplot(2,4,2)
 
-plot(original_time.*s2yr,original_eps_g,'LineWidth',1)
+plot(time_1.*s2yr,eps_g_1,'LineWidth',1)
 hold on
-plot(new_time.*s2yr,new_eps_g,'LineWidth',1)
-plot(IC_time.*s2yr,IC_eps_g,'LineWidth',1)
+
+if length(composition_folders)>1
+plot(time_2.*s2yr,eps_g_2,'LineWidth',1)
+end
+
+if length(composition_folders)>2
+plot(time_3.*s2yr,eps_g_3,'LineWidth',1)
+end
+
 %xlabel('Time (years)')
 ylabel('\epsilon_{g}')
 set(gca,'LineWidth',1, 'FontSize',ftsize)
 
 
-
-
-
 % Plot T 
 subplot(2,4,3)
 
-plot(original_time.*s2yr,original_T-273,'LineWidth',1)
+plot(time_1.*s2yr,T_1-273,'LineWidth',1)
 hold on
-plot(new_time.*s2yr,new_T-273,'LineWidth',1)
-plot(IC_time.*s2yr,IC_T-273,'LineWidth',1)
+if length(composition_folders)>1
+plot(time_2.*s2yr,T_2-273,'LineWidth',1)
+end
+if length(composition_folders)>2
+plot(time_3.*s2yr,T_3-273,'LineWidth',1)
+end
 ylabel('T (C)')
 
 set(gca,'LineWidth',1, 'FontSize',ftsize)
@@ -116,10 +149,16 @@ set(gca,'LineWidth',1, 'FontSize',ftsize)
 % eps_x 
 subplot(2,4,4)
 
-plot(original_time.*s2yr,original_eps_x,'LineWidth',1)
+plot(time_1.*s2yr,eps_x_1,'LineWidth',1)
 hold on
-plot(new_time.*s2yr,new_eps_x,'LineWidth',1)
-plot(IC_time.*s2yr,IC_eps_x,'LineWidth',1)
+
+if length(composition_folders)>1
+plot(time_2.*s2yr,eps_x_2,'LineWidth',1)
+end
+
+if length(composition_folders)>2
+plot(time_3.*s2yr,eps_x_3,'LineWidth',1)
+end
 
 %xlabel('Time (years)')
 ylabel('\epsilon_{x}')
@@ -129,54 +168,88 @@ ylim([0 0.5])
 
 % Plot M 
 subplot(2,4,5)
-plot(original_time.*s2yr,original_tot_Mass,'LineWidth',1)
+plot(time_1.*s2yr,tot_Mass_1./tot_Mass_ini_1,'LineWidth',1)
 hold on
-plot(new_time.*s2yr,new_tot_Mass,'LineWidth',1)
-plot(IC_time.*s2yr,IC_tot_Mass,'LineWidth',1)
-ylabel('M')
+
+if length(composition_folders)>1
+plot(time_2.*s2yr,tot_Mass_2./tot_Mass_ini_2,'LineWidth',1)
+end
+
+if length(composition_folders)>2
+plot(time_3.*s2yr,tot_Mass_3./tot_Mass_ini_3,'LineWidth',1)
+end 
+
+ylabel('M/M_0')
 xlabel('Time (kyr)')
-ylabel('M')
+
 set(gca,'LineWidth',1, 'FontSize',ftsize)
 
 
 % Plot M_h2o / M_0
 subplot(2,4,6)
-plot(original_time.*s2yr,original_tot_Mass_H2O./original_tot_Mass_0,'LineWidth',1)
+plot(time_1.*s2yr,tot_Mass_H2O_1./tot_Mass_1,'Color',[0 0.4470 0.7410],'LineStyle','- -','LineWidth',1)
 hold on
-plot(new_time.*s2yr,new_tot_Mass_H2O./new_tot_Mass_0,'LineWidth',1)
-plot(IC_time.*s2yr,IC_tot_Mass_H2O./IC_tot_Mass_0,'LineWidth',1)
-ylabel('M_w/M_0')
+plot(time_1.*s2yr,m_H2O_diss_1./100,'Color',[0 0.4470 0.7410],'LineWidth',1)
+
+if length(composition_folders)>1
+plot(time_2.*s2yr,tot_Mass_H2O_2./tot_Mass_2,'Color',[0.8500 0.3250 0.0980],'LineStyle','- -','LineWidth',1)
+plot(time_2.*s2yr,m_H2O_diss_2./100,'Color',[0.8500 0.3250 0.0980],'LineWidth',1)
+end
+
+if length(composition_folders)>2
+plot(time_3.*s2yr,tot_Mass_H2O_3./tot_Mass_3,'Color',[0.9290 0.6940 0.1250],'LineStyle','- -','LineWidth',1)
+plot(time_3.*s2yr,m_H2O_diss_3./100,'Color',[0.9290 0.6940 0.1250],'LineWidth',1)
+end
+
+ylabel('H_2O Concentration')
 xlabel('Time (kyr)')
-ylabel('M_w/M_0')
+legend("total", "in melt")
 set(gca,'LineWidth',1, 'FontSize',ftsize)
 
 % Plot M_co2 / M_0
 subplot(2,4,7)
-plot(original_time.*s2yr,original_tot_Mass_CO2./original_tot_Mass_0,'LineWidth',1)
+plot(time_1.*s2yr,tot_Mass_CO2_1./tot_Mass_1,'Color',[0 0.4470 0.7410],'LineStyle','- -','LineWidth',1)
 hold on
-plot(new_time.*s2yr,new_tot_Mass_CO2./new_tot_Mass_0,'LineWidth',1)
-plot(IC_time.*s2yr,IC_tot_Mass_CO2./IC_tot_Mass_0,'LineWidth',1)
-ylabel('M_c/M_0')
+plot(time_1.*s2yr,m_CO2_diss_1./1e6,'Color',[0 0.4470 0.7410],'LineWidth',1)
+
+if length(composition_folders)>1
+plot(time_2.*s2yr,tot_Mass_CO2_2./tot_Mass_2,'Color',[0.8500 0.3250 0.0980],'LineStyle','- -','LineWidth',1)
+plot(time_2.*s2yr,m_CO2_diss_2./1e6,'Color',[0.8500 0.3250 0.0980],'LineWidth',1)
+end
+
+if length(composition_folders)>2
+plot(time_3.*s2yr,tot_Mass_CO2_3./tot_Mass_3,'Color',[0.9290 0.6940 0.1250],'LineStyle','- -','LineWidth',1)
+plot(time_3.*s2yr,m_CO2_diss_3./1e6,'Color',[0.9290 0.6940 0.1250],'LineWidth',1)
+end
+legend("total", "in melt")
+ylabel('CO_2 Concentration')
 xlabel('Time (kyr)')
-ylabel('M_c/M_0')
+
 set(gca,'LineWidth',1, 'FontSize',ftsize)
 
- %Plot P
+% Plot P
 subplot(2,4,8)
 
-plot(original_time.*s2yr,original_P/1e6,'LineWidth',1)
+plot(time_1.*s2yr,P_1/1e6,'LineWidth',1)
 hold on
-plot(new_time.*s2yr,new_P/1e6,'LineWidth',1)
 
-plot(IC_time.*s2yr,IC_P/1e6,'LineWidth',1)
+if length(composition_folders)>1
+plot(time_2.*s2yr,P_2/1e6,'LineWidth',1)
+end
+
+if length(composition_folders)>2
+plot(time_3.*s2yr,P_3/1e6,'LineWidth',1)
+end
 ylabel('P (MPa)')
 xlabel('Time (kyr)')
 
+sgtitle(['Run Number ', num2str(run_list(count)), ', V_0 = ', num2str(round((V0/1e9),3,'significant')), ' km^3, Mdot_{in} = ',num2str(round((mdot_in/1e9),4,'significant')), ' kg/s']);
 
-if save_compare ==1
-    mkdir(['comparison_figures/' composition_folder])
-    saveas(gca,['comparison_figures/' composition_folder 'run_' num2str(run_number) '.jpg'] )
+if save_timeseries ==1
+    mkdir(figure_directory)
+    saveas(gca,[figure_directory, figure_name_prefix, '_run_', num2str(run_number), figure_type] )
+    close 
 end
-clearvars -except save_compare compare_vec compare_count
-close all
+clearvars -except save_timeseries figure_directory figure_name_prefix figure_type run_list composition_folders legend_entries
+
 end
