@@ -10,3 +10,5 @@ Most user input settings are here in the run codes.
 - initial chamber volume or range of volumes (in km^3)
 - initial recharge rate or range of recharge rates (specify as log of km^3/yr)
 - chamber depth (in km)
+- if save options are on, folders will be created within this directory
+- if save option is off for runCode_single it automatically creates a timeseries figure that is not saved

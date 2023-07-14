@@ -1,4 +1,4 @@
-function dydz = odeChamber(time,y,        ...
+function dydz = odeChamber(time,y,...
     sw,...
     T_in,...
     param)
@@ -31,8 +31,7 @@ else
 end
 
 cross=find(abs(diff(sign(diff(storeTime))))>0, 1); % number of time interutpions
-% disp(storeTime)
-% disp(cross)
+
 
 if ~isempty(cross)
     cross_time=  storeTime(end);
@@ -56,18 +55,17 @@ drho_x_dT      = -rho_x*param.alpha_x;
 
 [rho_g,drho_g_dP,drho_g_dT] = eos_g(P,T);
 
-M_h2o    = y(9);%m_h2o_rep_start + Mdot_in_pass*tot_h2o_frac_in*(time-begin_time);
-M_co2    = y(10);%m_co2_rep_start + Mdot_in_pass*tot_co2_frac_in*(time-begin_time);
-total_Mass = y(8);%Mass_tot_rep_start +  Mdot_in_pass*(time-begin_time);
+M_h2o    = y(9);
+M_co2    = y(10);
+total_Mass = y(8);
 
 m_h2o= M_h2o/(total_Mass);
 m_co2=M_co2/(total_Mass);
-%display(['Line 84 odeChamber : M_h2o = ' num2str(M_h2o) ' ; M_co2 = ' num2str(M_co2) ' ; m_h2o =  ' num2str(m_h2o) ' ; m_co2 = ' num2str(m_co2)])
 
 if strcmp(param.composition,'silicic')
-    [eps_x, deps_x_dP, deps_x_dT,deps_x_deps_g, deps_x_dmco2_t, deps_x_dmh2o_t]= crystal_fraction_silicic(T,P,eps_g, X_co2,m_h2o,m_co2,rho_m,rho_x,rho_g);%,m_h2o,m_co2,rho_m,rho_x,rho_g
+    [eps_x, deps_x_dP, deps_x_dT,deps_x_deps_g, deps_x_dmco2_t, deps_x_dmh2o_t]= crystal_fraction_silicic(T,P,eps_g, X_co2,m_h2o,m_co2,rho_m,rho_x,rho_g);
 elseif strcmp(param.composition,'mafic')
-    [eps_x, deps_x_dP, deps_x_dT,deps_x_deps_g, deps_x_dmco2_t, deps_x_dmh2o_t]= crystal_fraction_mafic(T,P,eps_g, X_co2,m_h2o,m_co2,rho_m,rho_x,rho_g);%,m_h2o,m_co2,rho_m,rho_x,rho_g
+    [eps_x, deps_x_dP, deps_x_dT,deps_x_deps_g, deps_x_dmco2_t, deps_x_dmh2o_t]= crystal_fraction_mafic(T,P,eps_g, X_co2,m_h2o,m_co2,rho_m,rho_x,rho_g);
 end
 
 eps_m=1-eps_x-eps_g;
@@ -97,7 +95,7 @@ rho            = eps_m*rho_m + eps_g*rho_g + eps_x*rho_x;
 drho_dP        = eps_m*drho_m_dP + eps_g*drho_g_dP + eps_x*drho_x_dP+(rho_x-rho_m)*deps_x_dP;
 drho_dT        = eps_m*drho_m_dT + eps_g*drho_g_dT + eps_x*drho_x_dT+(rho_x-rho_m)*deps_x_dT;
 drho_deps_g    = -rho_m + rho_g;
-drho_dX_co2    = 0;%-rho_m + rho_x;
+drho_dX_co2    = 0;
 drho_dMco2t =  (rho_x-rho_m)*deps_x_dmco2_t;% COMPUTE deps_x_dMco2t
 drho_dMh2ot =  (rho_x-rho_m)*deps_x_dmh2o_t;% COMPUTE deps_x_dMh2ot
 
@@ -127,61 +125,58 @@ drc_dXco2       = rho_g*eps_g*dc_g_dX_co2;
 % values matrix A
 
 % conservation of (total) mass
-a11 = (1/rho)*drho_dP +(1/V)*dV_dP;
-a12 = (1/rho)*drho_dT     + (1/V)*dV_dT ;%+ (1/rho)*drho_deps_x*deps_x_dT;
-a13 = (1/rho)*drho_deps_g;
-a14 = 0;
+a11 = (1/rho)*drho_dP +(1/V)*dV_dP;       % Pressure derivative of mass conservation
+a12 = (1/rho)*drho_dT     + (1/V)*dV_dT ; % Temperature derivative of mass conservation
+a13 = (1/rho)*drho_deps_g;                % MVP fraction derivative of mass conservation
+a14 = 0;                                  % Xc derivative of mass conservation 
 
 % conservation of water mass
 a21 = eps_m*dm_eq_dP-m_eq*deps_x_dP+m_eq*eps_m*dV_dP/V+m_eq*eps_m* drho_m_dP/rho_m+(1-X_co2)/m_g*eps_g*param.mm_h2o*drho_g_dP/rho_m+...
-    (1-X_co2)/m_g*eps_g*rho_g*param.mm_h2o*dV_dP/(rho_m*V);
+    (1-X_co2)/m_g*eps_g*rho_g*param.mm_h2o*dV_dP/(rho_m*V); % Pressure derivative of H2O mass conservation
 a22 = eps_m*dm_eq_dT-m_eq*deps_x_dT+m_eq*eps_m*(1/V)*dV_dT+m_eq*eps_m*drho_m_dT/rho_m+(1-X_co2)/m_g*eps_g*param.mm_h2o*drho_g_dT/rho_m+...
-    (1-X_co2)/m_g*eps_g*rho_g*param.mm_h2o*dV_dT/(rho_m*V);
-a23 = -m_eq+(1-X_co2)/m_g*rho_g*param.mm_h2o/rho_m;
-a24 = eps_m*dm_eq_dX_co2-1/m_g*eps_g*rho_g*param.mm_h2o/rho_m-(1-X_co2)*eps_g*rho_g*param.mm_h2o*(param.mm_co2-param.mm_h2o)/(m_g^2*rho_m);
+    (1-X_co2)/m_g*eps_g*rho_g*param.mm_h2o*dV_dT/(rho_m*V); % Temperature derivative of H2O mass conservation
+a23 = -m_eq+(1-X_co2)/m_g*rho_g*param.mm_h2o/rho_m;         % MVP fraction derivative of H2O mass conservation
+a24 = eps_m*dm_eq_dX_co2-1/m_g*eps_g*rho_g*param.mm_h2o/rho_m...
+    -(1-X_co2)*eps_g*rho_g*param.mm_h2o*(param.mm_co2-param.mm_h2o)/(m_g^2*rho_m); % Xco2 derivative of H2O mass conservation
 
 
 % conservation of (total) enthalpy - all divided by rc*T*V
 
 a31  = drc_dP/(rc)+dV_dP/V+param.L_m*(-eps_x*drho_x_dP/(rc*T)-rho_x*deps_x_dP/(rc*T)-rho_x*eps_x*dV_dP/(rc*V*T))+...
-    param.L_e*(-dm_eq_dP*rho_m*eps_m/(rc*T)-m_eq*eps_m*drho_m_dP/(rc*T)+m_eq*rho_m*deps_x_dP/(rc*T)-m_eq*rho_m*eps_m*dV_dP/(rc*V*T));
+    param.L_e*(-dm_eq_dP*rho_m*eps_m/(rc*T)-m_eq*eps_m*drho_m_dP/(rc*T)+m_eq*rho_m*deps_x_dP/(rc*T)-m_eq*rho_m*eps_m*dV_dP/(rc*V*T)); % Pressure derivative of enthalpy conservation
 a32  = drc_dT/(rc)+1/T+dV_dT/V+param.L_m*(-eps_x*drho_x_dT/(rc*T)-rho_x*deps_x_dT/(rc*T)-rho_x*eps_x*dV_dT/(rc*T*V))+...
-    param.L_e*(-dm_eq_dT*rho_m*eps_m/(rc*T)-m_eq*eps_m*drho_m_dT/(rc*T)+m_eq*rho_m*deps_x_dT/(rc*T)-m_eq*rho_m*eps_m*dV_dT/(rc*T*V));
-a33  = drc_deps_g/rc + param.L_e*m_eq*rho_m/(rc*T);
-a34  = drc_dXco2/rc-param.L_e*rho_m*eps_m*dm_eq_dX_co2/(rc*T);
+    param.L_e*(-dm_eq_dT*rho_m*eps_m/(rc*T)-m_eq*eps_m*drho_m_dT/(rc*T)+m_eq*rho_m*deps_x_dT/(rc*T)-m_eq*rho_m*eps_m*dV_dT/(rc*T*V)); % Temperature derivative of enthalpy conservation
+a33  = drc_deps_g/rc + param.L_e*m_eq*rho_m/(rc*T); % MVP fraction derivative of enthalpy conservation
+a34  = drc_dXco2/rc-param.L_e*rho_m*eps_m*dm_eq_dX_co2/(rc*T); % Xc derivative of enthalpy conservation
 
 
 %conservation of CO2 mass
 
 a41 = eps_m*dC_co2_dP-C_co2*deps_x_dP+C_co2*eps_m*dV_dP/V+C_co2*eps_m* drho_m_dP/rho_m+X_co2/m_g*eps_g*param.mm_co2*drho_g_dP/rho_m+...
-    X_co2/m_g*eps_g*rho_g*param.mm_co2*dV_dP/(rho_m*V);
+    X_co2/m_g*eps_g*rho_g*param.mm_co2*dV_dP/(rho_m*V); % Pressure derivative of CO2 conservation
 a42 = eps_m*dC_co2_dT-C_co2*deps_x_dT+C_co2*eps_m*(1/V)*dV_dT+C_co2*eps_m*drho_m_dT/rho_m+X_co2/m_g*eps_g*param.mm_co2*drho_g_dT/rho_m+...
-    X_co2/m_g*eps_g*rho_g*param.mm_co2*dV_dT/(rho_m*V);
-a43 = -C_co2+X_co2/m_g*rho_g*param.mm_co2/rho_m;
-a44 = eps_m*dC_co2_dX_co2+1/m_g*eps_g*rho_g*param.mm_co2/rho_m-X_co2*eps_g*rho_g*param.mm_co2*(param.mm_co2-param.mm_h2o)/(m_g^2*rho_m);
-% a42 = (param.mm_co2/m_g)*X_co2*(-param.alpha_r+(1/rho_g)*drho_g_dT)...
-%     +((C_co2*rho_m*eps_m)/(eps_g*rho_g))*(-param.alpha_r-param.alpha_m-(1/eps_m)*deps_x_dT+(1/C_co2)*(dC_co2_dT));
-% a43 = (param.mm_co2*X_co2)/(m_g*eps_g)-((C_co2*rho_m)/(eps_g*rho_g))*(1+deps_x_deps_g);
-% a44 = (param.mm_co2*param.mm_h2o*X_co2)/(m_g^2)-(param.mm_co2^2/m_g^2)*X_co2+ param.mm_co2/m_g ...
-%     -((C_co2*rho_m)/(eps_g*rho_g))*deps_x_dX_co2+(rho_m*eps_m/(rho_g*eps_g))*dC_co2_dX_co2;
+    X_co2/m_g*eps_g*rho_g*param.mm_co2*dV_dT/(rho_m*V); % Temperature derivative of CO2 conservation
+a43 = -C_co2+X_co2/m_g*rho_g*param.mm_co2/rho_m; % MVP fraction derivative of CO2 conservation
+a44 = eps_m*dC_co2_dX_co2+1/m_g*eps_g*rho_g*param.mm_co2/rho_m-X_co2*eps_g*rho_g*param.mm_co2*(param.mm_co2-param.mm_h2o)/(m_g^2*rho_m); % Xc derivative of CO2 conservation
 
-% values vector B
-% conservation of (total) mass
-
+%compute LHS mass derivative for H2O and CO2
 dM_h2o_t_dt=1/(rho*V)*((Mdot_v_in-Mdot_v_out)-m_h2o*(Mdot_in-Mdot_out));
 dM_co2_t_dt=1/(rho*V)*((Mdot_c_in-Mdot_c_out)-m_co2*(Mdot_in-Mdot_out));
 
-
+% values vector B
+% conservation of (total) mass
 b1  =  (Mdot_in - Mdot_out)/(rho*V) - P_loss-(rho_x-rho_m)/rho*deps_x_dmh2o_t*dM_h2o_t_dt-(rho_x-rho_m)/rho*deps_x_dmco2_t*dM_co2_t_dt;
+
 % conservation of water mass
 b2  = (Mdot_v_in - Mdot_v_out)/(rho_m*V)+m_eq*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt)-m_eq*eps_m*P_loss-(1-X_co2)/m_g*rho_g/rho_m*eps_g*param.mm_h2o*P_loss;
-%(Mdot_v_in - Mdot_v_out)/(rho_g*eps_g*V) - P_loss*((param.mm_h2o*(1-X_co2))/m_g+(m_eq*rho_m*eps_m)/(rho_g*eps_g));
+
 % conservation of (total) enthalpy
 b3  =  (Hdot_in - Hdot_out)/(rc*T*V)...
     - 1/(rc*V*T)*((rho_x*param.c_x-rho_m*param.c_m)*T*V*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt))+...
     param.L_m*rho_x*V/(rc*V*T)*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt)...
     -param.L_e*m_eq*rho_m*V/(rc*V*T)*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt)+...
-    P_loss*(-1+param.L_m*rho_x*eps_x*V/(rc*V*T)+param.L_e*m_eq*rho_m*eps_m*V/(rc*V*T));%- P_loss*(1-(param.L_m*rho_x*eps_x)/(rho*c*T)-(param.L_e*m_eq*rho_m*eps_m)/(rho*c*T));
+    P_loss*(-1+param.L_m*rho_x*eps_x*V/(rc*V*T)+param.L_e*m_eq*rho_m*eps_m*V/(rc*V*T));
+
 % conservation of CO2 mass
 b4  =  (Mdot_c_in - Mdot_c_out)/(rho_m*V)+C_co2*(deps_x_dmh2o_t*dM_h2o_t_dt+deps_x_dmco2_t*dM_co2_t_dt)-C_co2*eps_m*P_loss-(X_co2)/m_g*rho_g/rho_m*eps_g*param.mm_co2*P_loss;
 
