@@ -1,8 +1,7 @@
 function [Mdot_in, Mdot_out, Mdot_v_in, Mdot_v_out, Mdot_c_in, Mdot_c_out, Hdot_in, Hdot_out, P_loss,eta_r] ...
     = boundary_conditions(P,T,eps_g,eps_x,V,rho_m,rho_x,m_eq,rho_g,rho,c,sw,...
     X_co2,C_co2,T_in,param)
-
-
+% This function passes in the boundary conditions for the ODE solver
 global Mdot_in_pass Mdot_out_pass P_lit tot_h2o_frac_in tot_co2_frac_in
 global Q_out_old M_h2o M_co2 total_Mass 
 
