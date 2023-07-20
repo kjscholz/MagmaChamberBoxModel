@@ -3,6 +3,7 @@ run_list = 1:18:900;
 addpath('../src/')
 % set up to compare up to three different runs, length of this vector
 % determine how many are plotted
+
 %composition_folders = ["silicic_H2O_4_CO2_100/";"silicic_H2O_4_CO2_1000/";"silicic_H2O_6_CO2_100/"];
 composition_folders = ["mafic_H2O_0.5_CO2_500/";"mafic_H2O_0.5_CO2_10000/";"mafic_H2O_2_CO2_500/"];
 
@@ -12,7 +13,10 @@ new = " ";
 legend_entries = replace(composition_folders,old,new);
 
 figure_directory = 'figures_timeseries/';
+
+%figure_name_prefix = 'silicic';
 figure_name_prefix = 'mafic';
+
 figure_type= '.jpg'; %options include .jpg and .epsc
 
 for count = 1:3%length(run_list)   
