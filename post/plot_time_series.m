@@ -1,5 +1,5 @@
-save_timeseries=1;
-run_list = 1:18:900;
+save_timeseries=0;
+run_list = [271,686,799];
 addpath('../src/')
 % set up to compare up to three different runs, length of this vector
 % determine how many are plotted
