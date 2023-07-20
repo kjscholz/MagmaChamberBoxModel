@@ -58,8 +58,8 @@ end
 
 
 % run chamber model over the grid values
-for run_s = 1:50
-    run_samples=1:18:900; 
+for run_s = 1:number_runs
+    run_samples=1:1:900; 
     run_i=run_samples(run_s);
     run_n       = run_i+1000;     % Number for input/output files
 
